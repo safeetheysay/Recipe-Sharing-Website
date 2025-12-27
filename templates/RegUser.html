@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ 
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>TastyShare </title>
+
+<!-- Bootstrap -->
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/bootstrap.css') }}">
+
+
+</head>
+<body>
+  
+  {% include "includes/general_navbar.html" %}
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 hidden-xs">
+        <div>
+<form method="post" action="{{ url_for('register')}}" enctype="multipart/form-data">
+  
+  <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp;&nbsp;Please input data to Reg User </h4>
+         
+        </div>
+        <div class="modal-body">
+               <div class="form-group">
+                  <label for="usr">User Name</label>
+                   <div class="input-group">
+				   <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+				   <input type="text" class="form-control" id="usr" name="username" placeholder="Enter a Username" required />
+               </div>
+			   </div>
+			   
+			   
+			   <div class="form-group">
+                  <label for="pwd" >Email Address</label>
+                  <div class="input-group">
+				   <span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
+				   <input type="email" class="form-control" id="pwd" name="email" placeholder="Enter Your Email Address" required />
+               </div>
+			   </div>
+			 
+			
+			 
+			 
+			   
+			   <div class="form-group">
+                  <label for="pwd" >Phone Number</label>
+                  <div class="input-group">
+				   <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+				   <input type="number" class="form-control"   name="phone" placeholder="Enter your Phone Number" required />
+               </div>
+			   </div>
+
+         <div class="form-group">
+                  <label for="pwd" >CNIC</label>
+                  <div class="input-group">
+				   <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+				   <input type="number" class="form-control" name="cnic" placeholder="Enter your CNIC without dashes" required />
+               </div>
+			   </div>
+			 
+			 
+			 <div class="form-group">
+                  <label for="pwd" >Password</label>
+                  <div class="input-group">
+				   <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+				   <input type="password" class="form-control" id="Address" name="password" placeholder="Set a Password" required />
+               </div>
+			   </div>
+
+         <div class="form-group">
+                  <label for="pwd" >Choose Picture</label>
+                  <div class="input-group">
+				   <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+             <input type="file" class="form-control" id="user_image" name="picture" accept="image/*">
+               </div>
+              </div>
+        
+			 
+			   
+			   <div class="modal-footer">
+          <div class="row"> 
+              <div class="col-md-12 "> 
+					<button type="submit" id="btn" name="btn" class="btn btn-danger">Save</button>
+					 <button type="reset" class="btn btn-primary" value="Reset">Reset</button>
+			       
+		  		
+		     </div>
+		  
+         </div>
+      
+              </div>
+   
+</form>
+</div>
+      </div>
+    </div>
+    <hr>
+  </div>
+
+<hr>
+<div class="container">
+  <div class="row">
+    <div class="col-lg-9 col-md-12">
+
+
+    </div>
+    
+  </div>
+</div>
+<hr>
+
+<hr>
+<div class="container well">
+  <div class="row">
+<div class="col-xs-6 col-sm-6 col-lg-4 col-md-4"> <span class="text-right">
+      </span>
+  <h3>About Us</h3>
+  <hr>
+  <p></p>
+</div>
+<div class="col-xs-6 col-sm-6 col-lg-4 col-md-4 hidden-sm hidden-xs"> <span class="text-right"> </span>
+  <h3>Latest News</h3>
+  <hr>
+  <div class="media-object-default">
+  <div class="media">
+  <div class="media-body">
+        <h4 class="media-heading"></h4>
+ </div>
+      <div class="media-right"> <a href="#"> </a></div>
+</div>
+<div class="media">
+  <div class="media-body">
+    <h4 class="media-heading"></h4></div>
+  <div class="media-right"> <a href="#"></a></div>
+</div>
+</div>
+</div>
+<div class="col-xs-6 col-sm-6 col-lg-4 col-md-4"> <span class="text-right"> </span>
+  <h3>Contact Us</h3>
+  <hr>
+
+    
+
+      
+</div>
+  </div>
+</div>
+<footer class="text-center">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+        <p>TastyShare.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="{{ url_for('static', filename='assets/js/jquery-1.11.3.min.js') }}"></script> 
+ 
+<script src="{{ url_for('static', filename='assets/js/bootstrap.js') }}"></script>
+
+<script>setTimeout(function() {
+    const flashes = document.querySelectorAll('.alert');
+    flashes.forEach(flash => {
+      flash.style.transition = "opacity 1s ease";
+      flash.style.opacity = 0;
+      setTimeout(() => flash.remove(), 1000); // remove from DOM after fade
+    });
+  }, 2000);
+</script>
+</body>
+</html>

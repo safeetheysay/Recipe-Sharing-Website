@@ -1,0 +1,9 @@
+{% if session.user_id == comment.user_id or session.role == 'admin' %}
+<button
+  class="btn btn-border-primary btn-xs delete-comment-btn"
+  data-comment-id="{{ comment.id }}"
+  style="margin-left: 15px; padding: 4px 8px"
+>
+  🗑️
+</button>
+{% endif %}

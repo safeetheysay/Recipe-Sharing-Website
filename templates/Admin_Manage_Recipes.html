@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      .recipe-card,
+      .user-card {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      .status-pending {
+        color: #ff9800;
+        font-weight: bold;
+      }
+      .status-approved {
+        color: #4caf50;
+        font-weight: bold;
+      }
+      .status-rejected {
+        color: #f44336;
+        font-weight: bold;
+      }
+      .btn-action {
+        margin: 5px;
+      }
+
+      .nav-tabs {
+        border-bottom: 2px solid #ddd;
+        margin: 20px auto;
+        display: flex;
+        justify-content: center;
+        width: 90%;
+        max-width: 800px;
+      }
+
+      .nav-tabs .nav-item {
+        margin: 0 5px;
+      }
+
+      .nav-tabs .nav-link {
+        border: 2px solid transparent;
+        border-radius: 8px 8px 0 0;
+        padding: 12px 20px;
+        font-weight: 600;
+        color: #555;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+      }
+
+      .nav-tabs .nav-link.active {
+        color: #495057;
+        background-color: #fff;
+        border-color: #ddd #ddd #fff;
+        border-bottom: 3px solid #dc3545;
+        transform: translateY(-1px);
+      }
+
+      .tab-content {
+        width: 90%;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .recipe-card {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+      }
+
+      .recipe-image {
+        flex: 0 0 170px;
+      }
+      .recipe-image img {
+        width: 170px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 2px solid #ddd;
+      }
+      .no-image {
+        width: 170px;
+        height: 120px;
+        background: #f0f0f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        color: #666;
+        font-style: italic;
+        border: 2px solid #eee;
+      }
+
+      .recipe-details {
+        flex: 1;
+      }
+
+      /* FIX: Make meta-row vertical like other elements */
+      .meta-row {
+        display: block;
+        margin-bottom: 8px;
+      }
+      .meta-row p {
+        margin: 4px 0;
+        color: #555;
+        font-size: 14px;
+      }
+      
+      .card-actions {
+        text-align: right;
+      }
+      .section-heading {
+        margin-bottom: 8px;
+      }
+
+      /* Fix for the awkward gap */
+      .navbar {
+        margin-bottom: 0;
+      }
+      .container:first-of-type {
+        padding-top: 20px;
+      }
+      .panel.panel-danger {
+        margin-bottom: 0;
+      }
+      hr {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+
+      .tab-content {
+        position: relative;
+      }
+      .tab-pane {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+      }
+      .tab-pane:not(.active) {
+        display: none;
+      }
+      .tab-pane.active {
+        position: relative;
+        display: block;
+      }
+
+      /* NEW: Improved recipe details layout */
+      .recipe-details-content {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .detail-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+
+      .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 14px;
+        color: #555;
+      }
+
+      .detail-item strong {
+        color: #333;
+      }
+
+      /* Rating specific styling */
+      .rating-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 5px 0;
+      }
+
+      /* NEW: Responsive design for small screens */
+      @media (max-width: 768px) {
+        .recipe-card {
+          flex-direction: column;
+          gap: 15px;
+        }
+        
+        .recipe-image {
+          flex: 0 0 auto;
+          align-self: center;
+        }
+        
+        .recipe-image img,
+        .no-image {
+          width: 100%;
+          max-width: 300px;
+        }
+        
+        .detail-row {
+          flex-direction: column;
+          gap: 8px;
+        }
+        
+        .detail-item {
+          flex-wrap: wrap;
+        }
+        
+        .card-actions {
+          text-align: left;
+          margin-top: 15px;
+        }
+        
+        .card-actions .btn-action {
+          margin: 2px;
+          display: inline-block;
+        }
+        
+        /* Keep meta-row vertical on mobile too */
+        .meta-row {
+          display: block;
+        }
+      }
+    .recipe-details > p {
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.recipe-details > p strong {
+    min-width: 80px;
+    flex-shrink: 0;
+}
+    </style>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>TastyShare - Admin Dashboard (Stack)</title>
+
+    <!-- Bootstrap -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='assets/css/bootstrap.css') }}"
+    />
+  </head>
+  <body>
+    {% include "includes/admin_navbar.html" %}
+
+    <div class="container">
+      
+
+              </div>
+              <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="panel panel-danger">
+            <div class="panel-heading text-center">
+              <h4>
+                <span class="glyphicon glyphicon-th-list"></span>
+                &nbsp; Manage Recipes
+              </h4>
+            </div>
+            <div class="panel-body text-center">
+              <h4>
+                <strong>Welcome, {{ session.username.capitalize() }}!</strong>
+                Manage Recipe Approvals below.
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr />
+    </div>
+
+    <!-- Tab Container -->
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12">
+          <!-- Tab Navigation -->
+          <ul class="nav nav-tabs" id="recipeTabs" role="tablist">
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                id="pending-tab"
+                data-toggle="tab"
+                href="#pending"
+                role="tab"
+                aria-controls="pending"
+                aria-selected="true"
+                >⏳ Pending ({{ pending_recipes|length }})</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                id="approved-tab"
+                data-toggle="tab"
+                href="#approved"
+                role="tab"
+                aria-controls="approved"
+                aria-selected="false"
+                >✅ Approved ({{ approved_recipes|length }})</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                id="rejected-tab"
+                data-toggle="tab"
+                href="#rejected"
+                role="tab"
+                aria-controls="rejected"
+                aria-selected="false"
+                >❌ Rejected ({{ rejected_recipes|length }})</a
+              >
+            </li>
+
+           
+
+          </ul>
+          <div class="tab-content" id="recipeTabsContent">
+  <!-- Default message -->
+  <div class="default-message text-center py-4">
+    <p class="text-muted">👆 Select a tab above to view recipes.</p>
+  </div>
+          
+
+          <div class="tab-content" id="recipeTabsContent">
+            <!-- Pending (stacked) -->
+            <div
+              class="tab-pane fade show active"
+              id="pending"
+              role="tabpanel"
+              aria-labelledby="pending-tab"
+            >
+              <h3 class="section-heading">⏳ Pending Recipes for Approval</h3>
+              {% if pending_recipes %} {% for recipe in pending_recipes %}
+              <div class="recipe-card">
+                <div class="recipe-image">
+                  {% if recipe.image_path %}
+                  <img
+                    src="{{ url_for('static', filename=recipe.image_path) }}"
+                    alt="{{ recipe.title }}"
+                  />
+                  {% else %}
+                  <div class="no-image">No Image</div>
+                  {% endif %}
+                </div>
+                <div class="recipe-details">
+                  <h3 style="margin-top: 0">
+                    <strong>{{ recipe.title }}</strong>
+                  </h3>
+                  <div class="meta-row">
+                    <p><strong>Submitted by:</strong> {{ recipe.username.capitalize() }}</p>
+                    <p><strong>Category:</strong> {{ recipe.category }}</p>
+                    <p>
+                      <strong>Status:</strong>
+                      <span class="status-pending"
+                        >{{ recipe.status.capitalize() }}</span
+                      >
+                    </p>
+                  </div>
+                  <p style="margin-top: 8px">
+                    <strong>Ingredients:</strong> {{ recipe.ingredients }}
+                  </p>
+                  <p><strong>Steps:</strong> {{ recipe.steps }}</p>
+                </div>
+                <div class="card-actions">
+                  <a
+                    href="{{ url_for('approve_recipe', recipe_id=recipe.id) }}"
+                    class="btn btn-success btn-sm btn-action"
+                    >✅ Approve</a
+                  >
+                  <a
+                    href="{{ url_for('reject_recipe', recipe_id=recipe.id) }}"
+                    class="btn btn-danger btn-sm btn-action"
+                    >❌ Reject</a
+                  >
+                </div>
+              </div>
+              {% endfor %} {% else %}
+              <div class="well well-info mt-3">
+                <p>No pending recipes for approval.</p>
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Approved (stacked) -->
+            <div
+              class="tab-pane fade"
+              id="approved"
+              role="tabpanel"
+              aria-labelledby="approved-tab"
+            >
+              <h3 class="section-heading" style="margin-bottom: 15px">
+                ✅ Approved Recipes
+              </h3>
+              {% if approved_recipes %} {% for recipe in approved_recipes %}
+              <div class="recipe-card" style="margin-top: 0">
+                <div class="recipe-image">
+                  {% if recipe.image_path %}
+                  <img
+                    src="{{ url_for('static', filename=recipe.image_path) }}"
+                    alt="{{ recipe.title }}"
+                  />
+                  {% else %}
+                  <div class="no-image">No Image</div>
+                  {% endif %}
+                </div>
+                <div class="recipe-details">
+                  <h3 style="margin-top: 0">
+                    <strong>{{ recipe.title }}</strong>
+                  </h3>
+                  <div class="meta-row">
+                    <p><strong>Submitted by:</strong> {{ recipe.username.capitalize() }}</p>
+                    <p><strong>Category:</strong> {{ recipe.category }}</p>
+                    <p>
+                      <strong>Status:</strong>
+                      <span class="status-approved">
+                        {{ recipe.status.capitalize() }}
+                      </span>
+                    </p>
+                  </div>
+                  <p style="margin-top: 8px">
+                    <strong>Ingredients:</strong> {{ recipe.ingredients }}
+                  </p>
+                  <p><strong>Steps:</strong> {{ recipe.steps }}</p>
+                  <p><strong>Rating:</strong> {% if recipe.status == 'approved' %} {% include
+                  "includes/ratings.html" %} {% endif %}</p> 
+                </div>
+
+                
+                <div class="card-actions">
+                  <a
+                    href="{{ url_for('reject_recipe', recipe_id=recipe.id) }}"
+                    class="btn btn-warning btn-sm btn-action"
+                    >↩️ Undo Approval</a
+                  >
+                </div>
+              </div>
+              {% endfor %} {% else %}
+              <div class="well well-info mt-3">
+                <p>No approved recipes yet.</p>
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Rejected (stacked) -->
+            <div
+              class="tab-pane fade"
+              id="rejected"
+              role="tabpanel"
+              aria-labelledby="rejected-tab"
+            >
+              <h3 class="section-heading">❌ Rejected Recipes</h3>
+              {% if rejected_recipes %} {% for recipe in rejected_recipes %}
+              <div class="recipe-card">
+                <div class="recipe-image">
+                  {% if recipe.image_path %}
+                  <img
+                    src="{{ url_for('static', filename=recipe.image_path) }}"
+                    alt="{{ recipe.title }}"
+                  />
+                  {% else %}
+                  <div class="no-image">No Image</div>
+                  {% endif %}
+                </div>
+                <div class="recipe-details">
+                  <h3 style="margin-top: 0">
+                    <strong>{{ recipe.title }}</strong>
+                  </h3>
+                  <div class="meta-row">
+                    <p><strong>Submitted by:</strong> {{ recipe.username.capitalize() }}</p>
+                    <p><strong>Category:</strong> {{ recipe.category }}</p>
+                    <p>
+                      <strong>Status:</strong>
+                      <span class="status-rejected"
+                        >{{ recipe.status.capitalize() }}</span
+                      >
+                    </p>
+                  </div>
+                  <p style="margin-top: 8px">
+                    <strong>Ingredients:</strong> {{ recipe.ingredients }}
+                  </p>
+                  <p><strong>Steps:</strong> {{ recipe.steps }}</p>
+                </div>
+                <div class="card-actions">
+                  <a
+                    href="{{ url_for('approve_recipe', recipe_id=recipe.id) }}"
+                    class="btn btn-success btn-sm btn-action"
+                    >✅ Approve</a
+                  >
+                </div>
+              </div>
+              {% endfor %} {% else %}
+              <div class="well well-info mt-3">
+                <p>No rejected recipes.</p>
+              </div>
+              {% endif %}
+            </div>
+
+          
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+    <div class="container well">
+      <div class="row">
+        <div class="col-xs-6 col-sm-6 col-lg-4 col-md-4">
+          <h3>About Us</h3>
+          <hr />
+          <p></p>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-lg-4 col-md-4 hidden-sm hidden-xs">
+          <h3>Latest News</h3>
+          <hr />
+        </div>
+        <div class="col-xs-6 col-sm-6 col-lg-4 col-md-4">
+          <h3>Contact Us</h3>
+          <hr />
+        </div>
+      </div>
+    </div>
+
+    <footer class="text-center">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12">
+            <p>TastyShare.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='assets/js/jquery-1.11.3.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/bootstrap.js') }}"></script>
+
+    <script>
+  $(document).ready(function () {
+   
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function () {
+      $('.default-message').hide();
+    });
+  });
+
+  setTimeout(function() {
+    const flashes = document.querySelectorAll('.alert');
+    flashes.forEach(flash => {
+      flash.style.transition = "opacity 1s ease";
+      flash.style.opacity = 0;
+      setTimeout(() => flash.remove(), 1000); // remove from DOM after fade
+    });
+  }, 2000);
+
+</script>
+
+  </body>
+</html>

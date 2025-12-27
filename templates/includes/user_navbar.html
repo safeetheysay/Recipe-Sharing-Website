@@ -1,0 +1,193 @@
+<style>
+  /* Search Container Styles */
+  .search-container {
+    position: relative;
+    display: inline-block;
+    margin-right: 15px;
+    vertical-align: middle;
+  }
+
+  #search-form {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    display: none;
+    margin-top: 10px;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    min-width: 320px;
+    border: 1px solid #ddd;
+  }
+
+  #search-form input,
+  #search-form select {
+    margin-bottom: 10px;
+    display: block;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px 12px;
+  }
+
+  #search-form button[type="submit"] {
+    width: 100%;
+    padding: 8px 12px;
+  }
+
+  #search-toggle {
+    padding: 10px 15px;
+    border-radius: 4px;
+    background: transparent;
+    border: 1px solid #ddd;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  #search-toggle:hover {
+    background: #e9ecef;
+    color: #333;
+  }
+
+  .navbar-nav > li {
+    margin-left: 10px;
+  }
+
+  /* Ensure proper navbar spacing */
+  .navbar-nav .search-container {
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .search-container {
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+
+    #search-form {
+      right: -50px;
+      min-width: 280px;
+    }
+  }
+</style>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header"></div>
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button
+          type="button"
+          class="navbar-toggle collapsed"
+          data-toggle="collapse"
+          data-target="#myInverseNavbar2"
+          aria-expanded="false"
+        >
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span> <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="{{ url_for('index') }}">TastyShare</a>
+      </div>
+      <div class="collapse navbar-collapse" id="myInverseNavbar2">
+        <ul class="nav navbar-nav navbar-right">
+          {% if show_search %}
+          <li class="search-container">
+            <button
+              id="search-toggle"
+              class="btn btn-default"
+              style="padding: 10px 16px; font-size: 16px"
+            >
+              🔍
+            </button>
+            <form
+              id="search-form"
+              action="{{ url_for('search_recipe') }}"
+              method="get"
+            >
+              <input
+                type="text"
+                name="keyword"
+                placeholder="Search recipes..."
+                class="form-control"
+              />
+              <select name="category" class="form-control">
+                <option value="all">All Categories</option>
+                <option value="Non-Veg">Non-Vegeterian</option>
+                <option value="Vegeterian">Vegeterian</option>
+                <option value="Desserts">Desserts</option>
+                <option value="Snacks">Snacks</option>
+                <option value="Drinks">Drinks</option>
+              </select>
+              <button type="submit" class="btn btn-primary btn-block">
+                Search
+              </button>
+            </form>
+          </li>
+          {% endif %} {% include "includes/notifications.html" %}
+          <li><a href="{{ url_for('my_favorites') }}">❤️ My Favorites</a></li>
+          <!-- NEW RECIPE DROPDOWN -->
+          <li class="dropdown">
+            <a
+              href="#"
+              class="dropdown-toggle"
+              data-toggle="dropdown"
+              role="button"
+              aria-expanded="false"
+              aria-haspopup="true"
+            >
+              📝 Recipe <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a href="{{ url_for('manage_recipes') }}">📋 My Recipes</a>
+              </li>
+              <li>
+                <a href="{{ url_for('All_recipes') }}">🌟 All Recipes</a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="dropdown">
+            <a
+              href="#"
+              class="dropdown-toggle"
+              data-toggle="dropdown"
+              role="button"
+              aria-expanded="false"
+              aria-haspopup="true"
+            >
+              Welcome {{ session.username.capitalize() }}!<span
+                class="caret"
+              ></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="{{ url_for('profile') }}">👤 My Profile</a></li>
+              <li><a href="{{ url_for('add_recipe') }}">➕ Add Recipe</a></li>
+              <li>
+                <a href="{{ url_for('feedbacks') }}">💬 Give FeedBack</a>
+              </li>
+              <li role="separator" class="divider"></li>
+              <li><a href="{{ url_for('logout') }}">🚪 Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages() %} {% if messages %} {% for message in
+messages %}
+<div
+  class="alert alert-{% if '✅' in message %}success{% else %}warning{% endif %} alert-dismissible"
+>
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  {{ message }}
+</div>
+{% endfor %} {% endif %} {% endwith %}

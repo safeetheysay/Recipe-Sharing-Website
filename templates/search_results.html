@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      .btn-action {
+        margin: 5px;
+      }
+      .no-recipes {
+        padding: 20px;
+        text-align: center;
+        color: #666;
+      }
+
+      .search-container {
+        position: relative;
+        display: inline-block;
+        margin-right: 15px;
+        vertical-align: middle;
+      }
+
+      #search-form {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        display: none;
+        margin-top: 10px;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        min-width: 320px;
+      }
+
+      #search-form input,
+      #search-form select {
+        margin-bottom: 10px;
+        display: block;
+        width: 100%;
+      }
+
+      #search-toggle {
+        padding: 10px 15px;
+        border-radius: 4px;
+        background: transparent;
+        border: 1px solid transparent;
+      }
+
+      #search-toggle:hover {
+        background: #e9ecef;
+      }
+
+      .navbar-nav > li {
+        margin-left: 10px;
+      }
+
+      /* Grid Design - FIXED */
+      .recipes-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      .recipe-card {
+        display: flex;
+        flex-direction: column;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        height: 100%;
+      }
+
+      .recipe-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .recipe-image {
+        width: 100%;
+        margin-bottom: 12px;
+      }
+
+      .recipe-image img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 2px solid #ddd;
+      }
+
+      .recipe-details {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .no-image {
+        width: 100%;
+        height: 180px;
+        background-color: #f0f0f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        color: #666;
+        font-style: italic;
+        border: 2px solid #eee;
+      }
+
+      .recipe-details h4 {
+        margin-top: 0;
+        margin-bottom: 8px;
+        font-size: 18px;
+        color: #333;
+      }
+
+      .recipe-details p {
+        margin-bottom: 8px;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      .recipe-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        font-size: 13px;
+        color: #666;
+      }
+
+      .recipe-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: auto;
+        padding-top: 10px;
+      }
+
+      /* Responsive design */
+      @media (max-width: 768px) {
+        .recipes-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .search-results-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .results-count {
+        color: #666;
+        font-size: 16px;
+        margin-top: 10px;
+      }
+    </style>
+
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>TastyShare - Search Results</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='assets/css/bootstrap.css') }}"
+    />
+  </head>
+  <body>
+    {% include "includes/user_navbar.html" %}
+
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="panel panel-danger">
+            <div class="panel-heading text-center">
+              <h3>Search Results</h3>
+            </div>
+            <div class="panel-body text-center">
+              <div class="results-count">
+                Found {{ recipes|length }} recipe(s) {% if
+                request.args.get('keyword') %} for "{{
+                request.args.get('keyword') }}" {% endif %} in {% if
+                request.args.get('category') == 'all' %}All Categories{% else
+                %}{{ request.args.get('category') }} category{% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr />
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12">
+          {% if recipes %}
+          <div class="recipes-grid">
+            {% for recipe in recipes %}
+            <div class="recipe-card">
+              <div class="recipe-image">
+                {% if recipe.image_path %}
+                <img
+                  src="{{ url_for('static', filename=recipe.image_path) }}"
+                  alt="{{ recipe.title }}"
+                />
+                {% else %}
+                <div class="no-image">No Image</div>
+                {% endif %}
+              </div>
+              <div class="recipe-details">
+                <h4><strong>{{ recipe.title }}</strong></h4>
+                <div class="recipe-meta">
+                  <span
+                    ><strong>By:</strong> {{ recipe.username.capitalize()
+                    }}</span
+                  >
+                  <span><strong>Category:</strong> {{ recipe.category }}</span>
+                </div>
+                {% if recipe.avg_rating %}
+                <p>
+                  <strong>Rating:</strong> ⭐ {{
+                  "%.1f"|format(recipe.avg_rating) }}/5
+                </p>
+                {% endif %}
+                <p>
+                  <strong>Ingredients:</strong> {{ recipe.ingredients[:100] }}{%
+                  if recipe.ingredients|length > 100 %}...{% endif %}
+                </p>
+                <p>
+                  <strong>Steps:</strong> {{ recipe.steps[:100] }}{% if
+                  recipe.steps|length > 100 %}...{% endif %}
+                </p>
+
+                <div class="recipe-actions">
+                  <a
+                    href="{{ url_for('view_recipe', recipe_id=recipe.id) }}"
+                    class="btn btn-info btn-sm btn-action"
+                    >👀 View Details</a
+                  >
+                  <a
+                    href="{{ url_for('add_review', recipe_id=recipe.id) }}"
+                    class="btn btn-success btn-sm btn-action"
+                    >⭐ Rate & Review</a
+                  >
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+          {% else %}
+          <div class="well well-info text-center">
+            <p>No Results Available!</p>
+            <a
+              class="btn btn-danger btn-sm btn-action"
+              onclick="window.history.back()"
+              >⬅️ Go back</a
+            >
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <hr />
+    <div class="container well">
+      <div class="row">
+        <div class="col-xs-6 col-sm-6 col-lg-4 col-md-4">
+          <h3>About Us</h3>
+          <hr />
+          <p>Share your creations with others!</p>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-lg-4 col-md-4 hidden-sm hidden-xs">
+          <h3>Latest News</h3>
+          <hr />
+          <p>New recipes added daily by our amazing community!</p>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-lg-4 col-md-4">
+          <h3>Contact Us</h3>
+          <hr />
+          <p>Email: support@tastyshare.com</p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="text-center">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12">
+            <p>TastyShare - Share Your Taste with the World</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript Files -->
+    <script src="{{ url_for('static', filename='assets/js/jquery-1.11.3.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/bootstrap.js') }}"></script>
+
+    <script>
+      $(document).ready(function () {
+        $("#search-toggle").on("click", function () {
+          $("#search-form").toggle("fast");
+        });
+
+        $(document).on("click", function (event) {
+          if (!$(event.target).closest(".search-container").length) {
+            $("#search-form").hide();
+          }
+        });
+      });
+
+      setTimeout(function () {
+        const flashes = document.querySelectorAll(".alert");
+        flashes.forEach((flash) => {
+          flash.style.transition = "opacity 1s ease";
+          flash.style.opacity = 0;
+          setTimeout(() => flash.remove(), 1000);
+        });
+      }, 2000);
+    </script>
+  </body>
+</html>

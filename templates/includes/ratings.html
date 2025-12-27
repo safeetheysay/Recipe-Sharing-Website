@@ -1,0 +1,71 @@
+<style>
+  .star-rating {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .star {
+    font-size: 24px;
+    color: #ddd;
+    position: relative;
+    text-shadow: 1px 1px 0px #bbb, -1px -1px 0px #bbb, 1px -1px 0px #bbb,
+      -1px 1px 0px #bbb; /* Thin gray border around star */
+  }
+
+  .star.filled {
+    color: #ffc107;
+    text-shadow: 1px 1px 0px #ff9800, -1px -1px 0px #ff9800,
+      1px -1px 0px #ff9800, -1px 1px 0px #ff9800; /* Gold border around filled star */
+  }
+
+  .star.half-filled {
+    color: #ddd;
+    text-shadow: 1px 1px 0px #ff9800, -1px -1px 0px #ff9800,
+      1px -1px 0px #ff9800, -1px 1px 0px #ff9800; /* Gold border around half star */
+  }
+
+  .star.half-filled::before {
+    content: "★";
+    position: absolute;
+    left: 0;
+    width: 50%;
+    overflow: hidden;
+    color: #ffc107;
+    text-shadow: none;
+  }
+
+  .rating-value {
+    margin-left: 10px;
+    font-size: 16px;
+    color: #666;
+    font-weight: bold;
+  }
+
+  .no-rating {
+    color: #999;
+    font-style: italic;
+  }
+</style>
+
+{% if recipe.avg_rating %}
+<div class="star-rating">
+  {% set avg_rating = recipe.avg_rating %} {% for i in range(1, 6) %} {% if i <=
+  avg_rating %}
+  <span class="star filled">★</span>
+  {% elif (avg_rating - (i-1)) >= 0.5 %}
+  <span class="star half-filled">★</span>
+  {% else %}
+  <span class="star">★</span>
+  {% endif %} {% endfor %}
+  <span class="rating-value">{{ "%.1f"|format(avg_rating) }}/5</span>
+</div>
+{% else %}
+<div class="star-rating">
+  {% for i in range(1, 6) %}
+  <span class="star">☆</span>
+  {% endfor %}
+  <span class="rating-value no-rating">NONE</span>
+</div>
+{% endif %}

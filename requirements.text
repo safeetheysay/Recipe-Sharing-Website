@@ -1,0 +1,13 @@
+Tools Required Before Running the Website
+
+LIBRARIES:
+
+1.flask
+2.mysql-connector-python
+3.pillow
+
+Softwares:
+
+1.MySQL
+2.VS_CODE (optional but recommended)
+3.Python (should be installed in the PC) 

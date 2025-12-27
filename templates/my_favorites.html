@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TastyShare - My Favorites</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='assets/css/bootstrap.css') }}"
+    />
+
+    <style>
+      body {
+        position: relative;
+        min-height: 100vh;
+        padding-bottom: 60px; /* Adjust based on footer height */
+      }
+      footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+      }
+      .recipe-card {
+        display: flex;
+        gap: 20px;
+        margin: 20px auto;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        max-width: 900px;
+      }
+      .recipe-image {
+        flex: 0 0 200px;
+      }
+      .recipe-image img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 2px solid #ddd;
+      }
+      .recipe-details {
+        flex: 1;
+      }
+      .no-image {
+        width: 200px;
+        height: 150px;
+        background-color: #f0f0f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        color: #666;
+        font-style: italic;
+      }
+      .status-pending {
+        color: #ff9800;
+        font-weight: bold;
+      }
+      .status-approved {
+        color: #4caf50;
+        font-weight: bold;
+      }
+      .status-rejected {
+        color: #f44336;
+        font-weight: bold;
+      }
+
+      .favorite-btn {
+        border: 1px solid #dc3545;
+        color: #dc3545;
+        background: white;
+        padding: 5px 10px;
+        text-decoration: none !important;
+        border-radius: 4px;
+        display: inline-block;
+      }
+      .favorite-btn:hover {
+        background: #fdfdfd;
+        color: rgb(255, 0, 0);
+        text-decoration: none !important;
+      }
+      .favorite-btn.favorited {
+        background: #dc3545;
+        color: white;
+      }
+      .page-title {
+        text-align: center;
+        margin: 20px 0;
+        color: #333;
+      }
+    </style>
+  </head>
+
+  <body>
+    {% include "includes/user_navbar.html" %}
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div>
+            <div class="panel panel-danger">
+              <div class="panel-heading text-center">
+                <h3>
+                  👤&nbsp;&nbsp;{{ session.username.capitalize() }}'s Favorites
+                </h3>
+              </div>
+              <div class="panel-body text-center">
+                <h4>View All Your Favorited Recipes Below.</h4>
+                <div class="m-3"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr />
+    </div>
+
+    <!-- My Favorites Page -->
+    <div class="container">
+      {% if recipes %} {% for recipe in recipes %}
+      <div class="recipe-card" id="recipe-{{ recipe.id }}">
+        <div class="recipe-image">
+          {% if recipe.image_path %}
+          <img
+            src="{{ url_for('static', filename=recipe.image_path) }}"
+            alt="{{ recipe.title }}"
+          />
+          {% else %}
+          <div class="no-image">No Image</div>
+          {% endif %}
+        </div>
+        <div class="recipe-details">
+          <h3><strong>{{ recipe.title }}</strong></h3>
+          <p><strong>Submitted by:</strong> {{ recipe.username }}</p>
+          <p><strong>Category:</strong> {{ recipe.category }}</p>
+          <p><strong>Ingredients:</strong> {{ recipe.ingredients }}</p>
+          <p><strong>Steps:</strong> {{ recipe.steps }}</p>
+
+          <div class="mt-2">
+            <a
+              href="{{ url_for('view_recipe', recipe_id=recipe.id) }}"
+              class="btn btn-info btn-sm"
+              >👀 View Details</a
+            >
+            <a
+              href="{{ url_for('add_review', recipe_id=recipe.id) }}"
+              class="btn btn-primary btn-sm"
+              >⭐ Rate or Review</a
+            >
+            <a
+              href="{{ url_for('toggle_favorite', recipe_id=recipe.id) }}"
+              class="favorite-btn favorited"
+            >
+              ❤️ Favorited
+            </a>
+            {% include "includes/comment_modal.html" %}
+          </div>
+        </div>
+      </div>
+      {% endfor %} {% else %}
+      <div
+        class="text-center"
+        style="
+          background: #d1ecf1;
+          border: 1px solid #bee5eb;
+          border-radius: 25px;
+          padding: 20px;
+          margin-bottom: 20px;
+          color: #0c5460;
+        "
+      >
+        <h4>No Favorites Yet!</h4>
+        <p>
+          You haven't favorited any recipes yet. Start exploring and add some
+          favorites!
+        </p>
+        <a href="{{ url_for('manage_recipes') }}" class="btn btn-primary"
+          >Browse Recipes</a
+        >
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center mt-5 mb-3">
+      <p>TastyShare - Share Your Taste with the World</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='assets/js/jquery-1.11.3.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/bootstrap.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='assets/js/ajax-component.js') }}"></script>
+  </body>
+</html>

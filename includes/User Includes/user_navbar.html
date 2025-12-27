@@ -1,0 +1,81 @@
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header"></div>
+
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button
+          type="button"
+          class="navbar-toggle collapsed"
+          data-toggle="collapse"
+          data-target="#myInverseNavbar2"
+          aria-expanded="false"
+        >
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span> <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="{{ url_for('index') }}">TastyShare</a>
+      </div>
+      <div class="collapse navbar-collapse" id="myInverseNavbar2">
+        <ul class="nav navbar-nav navbar-right">
+          <!-- Search Container -->
+          <li class="search-container">
+            <button
+              id="search-toggle"
+              class="btn btn-default"
+              style="padding: 10px 16px; font-size: 16px"
+            >
+              🔍
+            </button>
+            <form
+              id="search-form"
+              action="{{ url_for('search_recipe') }}"
+              method="get"
+            >
+              <input
+                type="text"
+                name="keyword"
+                placeholder="Search recipes..."
+                class="form-control"
+              />
+              <select name="category" class="form-control">
+                <option value="all">All Categories</option>
+                <option value="Non-Veg">Non-Vegeterian</option>
+                <option value="Vegeterian">Vegeterian</option>
+                <option value="Desserts">Desserts</option>
+                <option value="Snacks">Snacks</option>
+                <option value="Drinks">Drinks</option>
+              </select>
+              <button type="submit" class="btn btn-primary btn-block">
+                Search
+              </button>
+            </form>
+          </li>
+
+          <li class="dropdown">
+            <a
+              href="#"
+              class="dropdown-toggle"
+              data-toggle="dropdown"
+              role="button"
+              aria-expanded="false"
+              aria-haspopup="true"
+            >
+              Welcome {{ session.username.capitalize() }}!<span
+                class="caret"
+              ></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="{{ url_for('profile') }}">My Profile</a></li>
+              <li><a href="{{ url_for('add_recipe') }}">Add Recipe</a></li>
+              <li><a href="{{ url_for('feedbacks') }}">Give FeedBack</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>

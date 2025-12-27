@@ -1,0 +1,222 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <!-- Tab Navigation -->
+      <ul class="nav nav-tabs" id="recipeTabs" role="tablist">
+        <li class="nav-item">
+          <a
+            class="nav-link active"
+            id="pending-tab"
+            data-toggle="tab"
+            href="#pending"
+            role="tab"
+            aria-controls="pending"
+            aria-selected="true"
+            >⏳ Pending ({{ pending_recipes|length }})</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            id="approved-tab"
+            data-toggle="tab"
+            href="#approved"
+            role="tab"
+            aria-controls="approved"
+            aria-selected="false"
+            >✅ Approved ({{ approved_recipes|length }})</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            id="rejected-tab"
+            data-toggle="tab"
+            href="#rejected"
+            role="tab"
+            aria-controls="rejected"
+            aria-selected="false"
+            >❌ Rejected ({{ rejected_recipes|length }})</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            id="feedbacks-tab"
+            data-toggle="tab"
+            href="#feedbacks"
+            role="tab"
+            aria-controls="feedbacks"
+            aria-selected="false"
+            >💬 Feedbacks ({{ feedbacks|length }})</a
+          >
+        </li>
+      </ul>
+
+      <!-- Tab Content -->
+      <div class="tab-content" id="recipeTabsContent">
+        <!-- Default message -->
+        <div class="default-message text-center py-4">
+          <p class="text-muted">👆 Select a tab above to view recipes.</p>
+        </div>
+
+        <!-- Pending Tab -->
+        <div
+          class="tab-pane fade show active"
+          id="pending"
+          role="tabpanel"
+          aria-labelledby="pending-tab"
+        >
+          <h3 class="section-heading">⏳ Pending Recipes for Approval</h3>
+          {% if pending_recipes %} {% for recipe in pending_recipes %} {%
+          include 'includes/admin_recipe_card.html' %} {% endfor %} {% else %}
+          <div class="alert alert-info mt-3">
+            <p>No pending recipes for approval.</p>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Approved Tab -->
+        <div
+          class="tab-pane fade"
+          id="approved"
+          role="tabpanel"
+          aria-labelledby="approved-tab"
+        >
+          <h3 class="section-heading" style="margin-bottom: 15px">
+            ✅ Approved Recipes
+          </h3>
+          {% if approved_recipes %} {% for recipe in approved_recipes %}
+          <div class="recipe-card" style="margin-top: 0">
+            <div class="recipe-image">
+              {% if recipe.image_path %}
+              <img
+                src="{{ url_for('static', filename=recipe.image_path) }}"
+                alt="{{ recipe.title }}"
+              />
+              {% else %}
+              <div class="no-image">No Image</div>
+              {% endif %}
+            </div>
+            <div class="recipe-details">
+              <h3 style="margin-top: 0">
+                <strong>{{ recipe.title }}</strong>
+              </h3>
+              <div class="meta-row">
+                <p><strong>Submitted by:</strong> {{ recipe.username }}</p>
+                <p><strong>Category:</strong> {{ recipe.category }}</p>
+                <p>
+                  <strong>Status:</strong>
+                  <span class="status-approved">
+                    {{ recipe.status.capitalize() }}
+                  </span>
+                </p>
+              </div>
+              <p style="margin-top: 8px">
+                <strong>Ingredients:</strong> {{ recipe.ingredients }}
+              </p>
+              <p><strong>Steps:</strong> {{ recipe.steps }}</p>
+            </div>
+            <div class="card-actions">
+              <a
+                href="{{ url_for('reject_recipe', recipe_id=recipe.id) }}"
+                class="btn btn-warning btn-sm btn-action"
+                >↩️ Undo Approval</a
+              >
+            </div>
+          </div>
+          {% endfor %} {% else %}
+          <div class="alert alert-info mt-3">
+            <p>No approved recipes yet.</p>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Rejected Tab -->
+        <div
+          class="tab-pane fade"
+          id="rejected"
+          role="tabpanel"
+          aria-labelledby="rejected-tab"
+        >
+          <h3 class="section-heading">❌ Rejected Recipes</h3>
+          {% if rejected_recipes %} {% for recipe in rejected_recipes %}
+          <div class="recipe-card">
+            <div class="recipe-image">
+              {% if recipe.image_path %}
+              <img
+                src="{{ url_for('static', filename=recipe.image_path) }}"
+                alt="{{ recipe.title }}"
+              />
+              {% else %}
+              <div class="no-image">No Image</div>
+              {% endif %}
+            </div>
+            <div class="recipe-details">
+              <h3 style="margin-top: 0">
+                <strong>{{ recipe.title }}</strong>
+              </h3>
+              <div class="meta-row">
+                <p><strong>Submitted by:</strong> {{ recipe.username }}</p>
+                <p><strong>Category:</strong> {{ recipe.category }}</p>
+                <p>
+                  <strong>Status:</strong>
+                  <span class="status-rejected"
+                    >{{ recipe.status.capitalize() }}</span
+                  >
+                </p>
+              </div>
+              <p style="margin-top: 8px">
+                <strong>Ingredients:</strong> {{ recipe.ingredients }}
+              </p>
+              <p><strong>Steps:</strong> {{ recipe.steps }}</p>
+            </div>
+            <div class="card-actions">
+              <a
+                href="{{ url_for('approve_recipe', recipe_id=recipe.id) }}"
+                class="btn btn-success btn-sm btn-action"
+                >✅ Approve</a
+              >
+            </div>
+          </div>
+          {% endfor %} {% else %}
+          <div class="alert alert-info mt-3">
+            <p>No rejected recipes.</p>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Feedbacks Tab -->
+        <div
+          class="tab-pane fade"
+          id="feedbacks"
+          role="tabpanel"
+          aria-labelledby="feedbacks-tab"
+        >
+          <h3 class="section-heading">💬 User Feedbacks</h3>
+          {% if feedbacks %} {% for fb in feedbacks %}
+          <div class="recipe-card">
+            <div class="recipe-details">
+              <h4 style="margin-top: 0"><strong>{{ fb.username }}</strong></h4>
+              <div class="meta-row">
+                <p><strong>Email:</strong> {{ fb.email }}</p>
+                <p>
+                  <strong>Date:</strong> {{ fb.created_at.strftime('%Y-%m-%d
+                  %H:%M') if fb.created_at else '' }}
+                </p>
+              </div>
+              <p style="margin-top: 8px">
+                <strong>Message:</strong> {{ fb.message }}
+              </p>
+            </div>
+          </div>
+          {% endfor %} {% else %}
+          <div class="alert alert-info mt-3">
+            <p>No feedbacks yet.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,69 @@
+<style>
+  .dropdown-menu li a {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    max-width: 280px;
+    padding: 12px 15px;
+    line-height: 1.5;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.2s ease;
+  }
+
+  .dropdown-menu li:last-child a {
+    border-bottom: none;
+  }
+
+  .dropdown-menu li a:hover {
+    background-color: #f8f9fa;
+    color: #000;
+  }
+
+  .dropdown-menu li.unread a {
+    background-color: #e7f3ff;
+    border-left: 3px solid #007bff;
+    font-weight: 500;
+  }
+
+  .dropdown-menu li.unread a:hover {
+    background-color: #d1e7ff;
+  }
+
+  .dropdown-header {
+    padding: 12px 15px;
+    color: #6c757d;
+    font-size: 0.9em;
+    text-align: center;
+    font-style: italic;
+  }
+
+  /* Make the dropdown itself look better */
+  .dropdown-menu {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+</style>
+
+<li class="dropdown">
+  {% if show_bell_only %}
+
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">
+    🔔
+    <span id="notification-count" class="badge">0</span>
+  </a>
+  {% else %}
+
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+    >🔔 Notifications
+    <span id="notification-count" class="badge">0</span>
+  </a>
+  {% endif %}
+  <ul class="dropdown-menu" id="notifications-list">
+    <li class="dropdown-header">No new Notifications</li>
+  </ul>
+</li>

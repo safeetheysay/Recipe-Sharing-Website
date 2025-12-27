@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{% block title %}TastyShare{% endblock %}</title>
+
+    <!-- Bootstrap -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='assets/css/bootstrap.css') }}"
+    />
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body>
+    <!-- Conditional Navbar Loading -->
+    {% if session.user_id %} {% if session.role == 'admin' %} {% include
+    'includes/navbar_admin.html' %} {% else %} {% include
+    'includes/navbar_user.html' %} {% endif %} {% else %} {% include
+    'includes/navbar_public.html' %} {% endif %} {% block content %} {% endblock
+    %} {% include 'includes/footer.html' %}
+
+    <script src="{{ url_for('static', filename='assets/js/jquery-1.11.3.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/bootstrap.js') }}"></script>
+
+    {% block extra_js %}{% endblock %}
+
+    <script>
+      setTimeout(function () {
+        const flashes = document.querySelectorAll(".alert");
+        flashes.forEach((flash) => {
+          flash.style.transition = "opacity 1s ease";
+          flash.style.opacity = 0;
+          setTimeout(() => flash.remove(), 1000);
+        });
+      }, 2000);
+    </script>
+  </body>
+</html>

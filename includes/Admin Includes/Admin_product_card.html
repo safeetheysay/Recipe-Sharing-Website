@@ -1,0 +1,57 @@
+<div class="recipe-card">
+  <div class="recipe-image">
+    {% if recipe.image_path %}
+    <img
+      src="{{ url_for('static', filename=recipe.image_path) }}"
+      alt="{{ recipe.title }}"
+    />
+    {% else %}
+    <div class="no-image">No Image</div>
+    {% endif %}
+  </div>
+  <div class="recipe-details">
+    <h3 style="margin-top: 0">
+      <strong>{{ recipe.title }}</strong>
+    </h3>
+    <div class="meta-row">
+      <p><strong>Submitted by:</strong> {{ recipe.username }}</p>
+      <p><strong>Category:</strong> {{ recipe.category }}</p>
+      <p>
+        <strong>Status:</strong>
+        <span class="status-{{ recipe.status }}">
+          {{ recipe.status.capitalize() }}
+        </span>
+      </p>
+    </div>
+    <p style="margin-top: 8px">
+      <strong>Ingredients:</strong> {{ recipe.ingredients }}
+    </p>
+    <p><strong>Steps:</strong> {{ recipe.steps }}</p>
+  </div>
+  <div class="card-actions">
+    {% if recipe.status == 'pending' %}
+    <a
+      href="{{ url_for('approve_recipe', recipe_id=recipe.id) }}"
+      class="btn btn-success btn-sm btn-action"
+      >✅ Approve</a
+    >
+    <a
+      href="{{ url_for('reject_recipe', recipe_id=recipe.id) }}"
+      class="btn btn-danger btn-sm btn-action"
+      >❌ Reject</a
+    >
+    {% elif recipe.status == 'approved' %}
+    <a
+      href="{{ url_for('reject_recipe', recipe_id=recipe.id) }}"
+      class="btn btn-warning btn-sm btn-action"
+      >↩️ Undo Approval</a
+    >
+    {% elif recipe.status == 'rejected' %}
+    <a
+      href="{{ url_for('approve_recipe', recipe_id=recipe.id) }}"
+      class="btn btn-success btn-sm btn-action"
+      >✅ Approve</a
+    >
+    {% endif %}
+  </div>
+</div>

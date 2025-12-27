@@ -1,0 +1,183 @@
+{% extends "base.html" %} {% block title %}My Profile - TastyShare{% endblock %}
+{% block extra_css %}
+<style>
+  .recipe-card {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  .status-pending {
+    color: #ff9800;
+    font-weight: bold;
+  }
+  .status-approved {
+    color: #4caf50;
+    font-weight: bold;
+  }
+  .status-rejected {
+    color: #f44336;
+    font-weight: bold;
+  }
+  .btn-action {
+    margin: 5px;
+  }
+  .no-recipes {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+  }
+
+  /* Tab Styles */
+  .nav-tabs {
+    border-bottom: 2px solid #ddd;
+    margin: 20px auto;
+    display: flex;
+    justify-content: center;
+    width: 90%;
+    max-width: 600px;
+  }
+
+  .nav-tabs .nav-item {
+    margin: 0 10px;
+  }
+
+  .nav-tabs .nav-link {
+    border: 2px solid transparent;
+    border-radius: 8px 8px 0 0;
+    padding: 12px 25px;
+    font-weight: 600;
+    color: #555;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+  }
+
+  .nav-tabs .nav-link:hover {
+    border-color: #e9ecef #e9ecef #dee2e6;
+    background-color: #e9ecef;
+  }
+
+  .nav-tabs .nav-link.active {
+    color: #495057;
+    background-color: #fff;
+    border-color: #ddd #ddd #fff;
+    border-bottom: 3px solid #dc3545;
+  }
+
+  .tab-content {
+    width: 90%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .community-recipe {
+    border-left: 4px solid #4caf50;
+  }
+
+  .stats-well {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 10px;
+    padding: 15px;
+    margin: 10px 0;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .recipe-card {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  .recipe-image {
+    flex: 0 0 200px;
+  }
+  .recipe-image img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+  }
+  .recipe-details {
+    flex: 1;
+  }
+  .no-image {
+    width: 100%;
+    height: 150px;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: #666;
+    font-style: italic;
+  }
+
+  /* Search container styles */
+  .search-container {
+    position: relative;
+    display: inline-block;
+    margin-right: 15px;
+    vertical-align: middle;
+  }
+
+  #search-form {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    display: none;
+    margin-top: 10px;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    min-width: 320px;
+  }
+
+  #search-form input,
+  #search-form select {
+    margin-bottom: 10px;
+    display: block;
+    width: 100%;
+  }
+
+  #search-toggle {
+    padding: 10px 15px;
+    border-radius: 4px;
+    background: transparent;
+    border: 1px solid #ddd;
+  }
+
+  #search-toggle:hover {
+    background: #e9ecef;
+  }
+
+  .navbar-nav > li {
+    margin-left: 10px;
+  }
+</style>
+{% endblock %} {% block content %} {% include 'includes/profile_header.html' %}
+{% include 'includes/profile_tabs.html' %} {% include
+'includes/profile_footer.html' %} {% endblock %} {% block extra_js %}
+<script>
+  $(document).ready(function () {
+    $("#search-toggle").on("click", function () {
+      $("#search-form").toggle("fast");
+    });
+
+    // Close search form when clicking outside
+    $(document).on("click", function (event) {
+      if (!$(event.target).closest(".search-container").length) {
+        $("#search-form").hide();
+      }
+    });
+  });
+</script>
+{% endblock %}
