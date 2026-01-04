@@ -12,27 +12,26 @@
     />
 
     <style>
-
       body {
-  position: relative;
-  min-height: 100vh;
-  padding-bottom: 60px; /* Adjust based on footer height */
-}
-footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-}
+        position: relative;
+        min-height: 100vh;
+        padding-bottom: 60px; 
+      }
+      footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+      }
 
       .btn-border-primary {
-    border: 1px solid #000000;
-    color: #000000;
-    background: transparent;
-}
-.btn-border-primary:hover {
-    background: #ff0000;
-    color: white;
-}
+        border: 1px solid #000000;
+        color: #000000;
+        background: transparent;
+      }
+      .btn-border-primary:hover {
+        background: #ff0000;
+        color: white;
+      }
       .recipe-card {
         display: flex;
         gap: 20px;
@@ -80,31 +79,72 @@ footer {
         font-weight: bold;
       }
 
+      .favorite-btn {
+        border: 1px solid #dc3545;
+        color: #dc3545;
+        background: white;
+        padding: 5px 10px;
+        text-decoration: none !important;
+        border-radius: 4px;
+        display: inline-block;
+      }
+      .favorite-btn:hover {
+        background: #fdfdfd;
+        color: rgb(255, 0, 0);
+        text-decoration: none !important;
+      }
+      .favorite-btn.favorited {
+        background: #dc3545;
+        color: white;
+      }
       
-.favorite-btn {
-  border: 1px solid #dc3545;
-  color: #dc3545;
-  background: white;
-  padding: 5px 10px;
-  text-decoration: none !important;
-  border-radius: 4px;
-  display: inline-block;
-}
-.favorite-btn:hover {
-  background: #fdfdfd;
-  color: rgb(255, 0, 0);
-  text-decoration: none !important;
-}
-.favorite-btn.favorited {
-  background: #dc3545;
-  color: white;
-}
-</style>
+      .reviews-section {
+        margin-top: 25px;
+        padding: 15px;
+        background-color: #fff;
+        border-radius: 5px;
+        border: 1px solid #eee;
+      }
+      .review-item {
+        padding: 10px 0;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      .review-item:last-child {
+        border-bottom: none;
+      }
+      .review-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+      }
+      .review-author {
+        font-weight: bold;
+        color: #333;
+      }
+      .review-rating {
+        color: #ff9800;
+        font-weight: bold;
+      }
+      .review-content {
+        color: #555;
+        font-size: 0.95em;
+      }
+      .review-date {
+        font-size: 0.85em;
+        color: #888;
+        margin-top: 5px;
+      }
+      .no-reviews {
+        color: #777;
+        font-style: italic;
+        text-align: center;
+        padding: 20px;
+      }
     </style>
   </head>
 
   <body>
-    <!-- Navbar -->
+    
     {% include "includes/user_navbar.html" %}
 
     <div class="container">
@@ -128,7 +168,7 @@ footer {
       <hr />
     </div>
 
-    <!-- Single Recipe Card -->
+    
     <div class="recipe-card">
       <div class="recipe-image">
         {% if recipe.image_path %}
@@ -164,19 +204,50 @@ footer {
             >⭐ Rate or Review</a
           >
           <a href="{{ url_for('toggle_favorite', recipe_id=recipe.id) }}" 
-   class="favorite-btn {{ 'favorited' if is_favorited else '' }}">
-  {{ '❤️ Favorited' if is_favorited else '♡ Favorite' }}
-</a>
-{% include "includes/comment_modal.html" %}
-
-            </div>
-            
-            
+            class="favorite-btn {{ 'favorited' if is_favorited else '' }}">
+            {{ '❤️ Favorited' if is_favorited else '♡ Favorite' }}
+          </a>
+          {% include "includes/comment_modal.html" %}
         </div>
+        
+    
+        <div class="reviews-section">
+          <h5><strong>Recent Reviews</strong></h5>
+          {% if reviews and reviews|length > 0 %}
+            {% for review in reviews[:3] %} <!-- Show 2-3 recent reviews -->
+            <div class="review-item">
+              <div class="review-header">
+                <span class="review-author">{{ review.username }}</span>
+                <span class="review-rating">⭐ {{ review.rating }}/5</span>
+              </div>
+              <div class="review-content">{{ review.comment }}</div>
+              <div class="review-date">
+                {{ review.created_at.strftime('%Y-%m-%d %H:%M') }}
+              </div>
+            </div>
+            {% endfor %}
+            
+           
+            {% if reviews|length < 3 %}
+            <div class="text-center mt-3">
+              <a href="{{ url_for('add_review', recipe_id=recipe.id) }}" class="btn btn-outline-primary btn-sm">
+                Share your thoughts about this recipe!
+              </a>
+            </div>
+            {% endif %}
+          {% else %}
+            <div class="no-reviews">
+              <p>No reviews yet. Be the first to review this recipe!</p>
+              <a href="{{ url_for('add_review', recipe_id=recipe.id) }}" class="btn btn-primary btn-sm">
+                Add Review
+              </a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
     </div>
-</div>
 
-    <!-- Footer -->
+    
     <footer class="text-center mt-5 mb-3">
       <p>TastyShare - Share Your Taste with the World</p>
     </footer>
